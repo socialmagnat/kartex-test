@@ -14,6 +14,7 @@ const issuer = "5121ce91-4a8f-4d3a-81a9-2b21039295aa";
 const audience = "da2b9d46-de76-498e-8746-471e8dd3d120";
 const subject = "api-request";
 const privateKey = fs.readFileSync("./private_key.txt");
+const requestBody = JSON.parse('{"message":"ping"}');
 
 function calculateHash(body) {
     var buf = new Buffer.from(JSON.stringify(body));
@@ -35,8 +36,8 @@ const start = async () => {
     try {
         app.post('/api/generateToken', async (req, res) => {
             try {
-                const body = req.body;
-                const token = createToken(privateKey, body);
+                // const body = req.body;
+                const token = createToken(privateKey, requestBody);
 
                 res.status(200).json({
                     "access_token": token,
