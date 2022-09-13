@@ -57,7 +57,7 @@ const start = async () => {
                             'X-Audit-Source-Type': 'Backend',
                             'X-Audit-User-Id': 'KartexUser',
                             'Content-Type': 'application/json',
-                            'Authorization': Bearer ${token}
+                            'Authorization': `Bearer ${token}`
                         },
                         url: url,
                         data: body
