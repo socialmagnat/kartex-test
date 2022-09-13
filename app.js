@@ -50,7 +50,7 @@ const start = async () => {
                     return res.status(400).json({message: "url error"});
                 }
 
-                if(login === req.headers['login'] && password === req.header['password']){
+                if(login === req.headers['login'] && password === req.headers['password']){
                     const response = await axios({
                         method: 'post',
                         headers: {
@@ -62,21 +62,8 @@ const start = async () => {
                         url: url,
                         data: body
                     });
-                    
-                    const res = await response.json();
-    
-    
-                    console.log(response);
-    
-                    // console.log(req.headers['url'])
-    
-                    // res.status(200).json({
-                    //     "access_token": token,
-                    //     "expires_in": "60",
-                    //     "result": res
-                    // });
 
-                    res.status(200).json(res);
+                    res.status(200).json(response.data);
                 } else {
                     res.status(400).json({message: 'error auth data'});
                 }
