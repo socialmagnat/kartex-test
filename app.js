@@ -4,10 +4,14 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const crypto = require("crypto");
 const fs = require('fs');
+const axios = require('axios');
 
 const app = express();
 app.use(express.json({limit: "50mb"}));
 app.use(cors());
+
+const login = 'kartex';
+const password = '12345678';
 
 const algorithm = "RS256";
 const issuer = "5121ce91-4a8f-4d3a-81a9-2b21039295aa";
@@ -34,15 +38,50 @@ function createToken(privateKey, requestBody) {
 
 const start = async () => {
     try {
+
+
         app.post('/api/generateToken', async (req, res) => {
             try {
                 const body = req.body;
                 const token = createToken(privateKey, body);
 
-                res.status(200).json({
-                    "access_token": token,
-                    "expires_in": "60"
-                });
+                const url = req.headers['url'];
+                if(!url){
+                    return res.status(400).json({message: "url error"});
+                }
+
+                if(login === req.headers['login'] && password === req.header['password']){
+                    const response = await axios({
+                        method: 'post',
+                        headers: {
+                            'X-Audit-Source-Type': 'Backend',
+                            'X-Audit-User-Id': 'KartexUser',
+                            'Content-Type': 'application/json',
+                            'Authorization': Bearer ${token}
+                        },
+                        url: url,
+                        data: body
+                    });
+                    
+                    const res = await response.json();
+    
+    
+                    console.log(response);
+    
+                    // console.log(req.headers['url'])
+    
+                    // res.status(200).json({
+                    //     "access_token": token,
+                    //     "expires_in": "60",
+                    //     "result": res
+                    // });
+
+                    res.status(200).json(res);
+                } else {
+                    res.status(400).json({message: 'error auth data'});
+                }
+
+                
             } catch (err) {
                 console.log(err);
                 res.sendStatus(400);
